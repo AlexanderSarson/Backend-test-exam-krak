@@ -6,7 +6,7 @@ addons:
   sonarcloud:
     organization: alexandersarson
     token:
-      secure: C9hAlOgXWTQviFqGxr6icS1x5KNcCjJLJKw5FJXq84hIHIefltuvN1lrED+zmfwlci93WBDnwDyIxgGwpt1Dopos1GwiwLj93bZq5WpyDxm0y7tpo7XlsebYt0UNsZb+/H4qy/9DhHOFhDXxJIObBQ7KmW58p+58+zFJIdXYTyuA23GT0OMZW03Obyqg/UcUM6I8BK4JUW4SyNidArMwpaNShjOweP0D27RhnQzWPmm6+K6V4RQFAgDGVS4eaDiwzcDv64GLeEscUheRRqbSG6HY3uFuL4zduFicXZVHVJRmnmu2EhtyNzzMdJ4skxtsbLCqBLtY6B4FDR1G0e0qFjbYrIUBm67ixJhLSS4brUepRyGtak60Q51Hop33+VrtESRYv+UOLslsG0c8vHoZaFrlmNa882Cyq9sW3A5fVDgCmc/LMeajUEi2xpqIPYh62KBfpMrVfcc6nmYQPHozG38SgkZBlR0AMyXCu3YqVqb7wie24wGVPp1I6P5wxT0S6JODZA/vzvOVjLsWUS1PFbclKJs8Uu5kXCcPDy9rKqA8PzYi0SzJ14GTug9WXOysWfyOsbgCW9IPU9XpwtDH2mrckE53EKNpHP4yk1v/6VxUoNXmiF81NVe8+lg3Y7xiNmqDtn7q0vgvewUx7CLyKeUk6TB72lG3iDUSR7rfFYg=
+      secure: NI9Mvu95uTl55b63Qq99xIxjOpiKXEPTkd6EI4CxgwzuemgT+eEMoMeK7eeR+SFdsODiCiU4skMPGZKjhWoLHeK3MyqhUkyAu7S9tuEOYI57gL1HgI39DZ8Tig51TnG+x0cdzvl2shNEzE1gwqs4xRHSa6PcHg/hdQ5D3qx1ZXz53KxqT9oESzOzMoKI66zSF82G3afQdfPrLYFSQTyUkV5aQ8q1AMgZvi1yb2nsaW4yiU+PFW5aVvIjplf8kXQATpQcUTNWi9HpRMOegXsbcXD5BDYsN1ASod9vQw079yVw8dbDjZtqX/B4hmfGz//E2hQ1s0QAn/1wS9XIJ3LeDBZwvTXrud2OXneoUyZ6sPmrjDsMcyTFntiWnTI8D1+d+PIjrP/H0jt7QVpb3nM7/Hx4h9GldhQRlrXeQ1tcZzg6+sfV4Zixf/7TAHNgDmI9gOBn4lcQ95U/fhw408pH1P2N8YN+Qr3EP9xIlL5yUDoiQNJdCRt1AqQ1ldarTLRTzg0sg+Kso5WeNoqoVl0FigLTOTeekBauEi2GBeUrAZR+petNXLX/12tNHuLqr/L9Qc3X6fmgkRe+sbwwyLFaLU+Abde1mBaC1cmF2zZk85tvtobjVpSACKvN19qUhUNNEoyIt/K+7CQ98Ep00IekNaWIkDuW6ouioe0Z8ylmpZU=
 cache:
   directories:
   - "$HOME/.m2"
@@ -31,7 +31,7 @@ before_script:
 - mysql --version
 - echo "before_script Complete"
 script:
-- mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar -Dsonar.projectKey=AlexanderSarson_JavaTemplateTravis
+- mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar -Dsonar.projectKey=AlexanderSarson_Backend-test-exam-krak
 deploy:
   provider: script
   script: mvn -Dremote.user=$REMOTE_USER -Dremote.password=$REMOTE_PW tomcat7:deploy
