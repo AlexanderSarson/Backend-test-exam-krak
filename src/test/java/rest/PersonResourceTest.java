@@ -22,7 +22,6 @@ import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.grizzly.http.util.HttpStatus;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
-import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.equalTo;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
@@ -37,8 +36,8 @@ import utils.EMF_Creator;
  * @author root
  */
 public class PersonResourceTest {
-
-    private static final int SERVER_PORT = 7777;
+    
+   private static final int SERVER_PORT = 7777;
     private static final String SERVER_URL = "http://localhost/api";
     private static Hobby h1, h2, h3, h4;
     private static Address a1, a2;
@@ -122,7 +121,6 @@ public class PersonResourceTest {
                 .body("email", equalTo(expectedEmail));
     }
     
-    @Disabled
     @Test
     public void testGetPersonByInvalidEmail() {
         String expectedEmail = "asdas@ok.dk";
@@ -131,8 +129,8 @@ public class PersonResourceTest {
                 .get("person/email/" + expectedEmail)
                 .then()
                 .assertThat()
-                .statusCode(HttpStatus.OK_200.getStatusCode())
-                .body("message", equalTo(expectedEmail));
+                .statusCode(HttpStatus.NOT_ACCEPTABLE_406.getStatusCode())
+                .body("message", equalTo("No person found with that email"));
     }
     
     @Test
@@ -147,5 +145,5 @@ public class PersonResourceTest {
                 .statusCode(HttpStatus.OK_200.getStatusCode())
                 .body("email", equalTo(expectedEmail));
     }
-
+    
 }
