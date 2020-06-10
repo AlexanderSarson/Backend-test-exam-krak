@@ -66,7 +66,7 @@ public class JokeResource {
                     @ApiResponse(responseCode = "200", description = "The requested random jokes"),
                     @ApiResponse(responseCode = "403", description = "Not authenticated - do login")})
     @GET
-    @RolesAllowed({"user","admin"})
+    //@RolesAllowed({"user","admin"})
     @Produces(MediaType.APPLICATION_JSON)
     public String getJokes() throws IOException {
         String chuckJson = HttpUtils.fetchData(CHUCK_URL);
