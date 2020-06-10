@@ -1,0 +1,40 @@
+dist: bionic
+language: java
+services:
+- mysql
+addons:
+  sonarcloud:
+    organization: alexandersarson
+    token:
+      secure: C9hAlOgXWTQviFqGxr6icS1x5KNcCjJLJKw5FJXq84hIHIefltuvN1lrED+zmfwlci93WBDnwDyIxgGwpt1Dopos1GwiwLj93bZq5WpyDxm0y7tpo7XlsebYt0UNsZb+/H4qy/9DhHOFhDXxJIObBQ7KmW58p+58+zFJIdXYTyuA23GT0OMZW03Obyqg/UcUM6I8BK4JUW4SyNidArMwpaNShjOweP0D27RhnQzWPmm6+K6V4RQFAgDGVS4eaDiwzcDv64GLeEscUheRRqbSG6HY3uFuL4zduFicXZVHVJRmnmu2EhtyNzzMdJ4skxtsbLCqBLtY6B4FDR1G0e0qFjbYrIUBm67ixJhLSS4brUepRyGtak60Q51Hop33+VrtESRYv+UOLslsG0c8vHoZaFrlmNa882Cyq9sW3A5fVDgCmc/LMeajUEi2xpqIPYh62KBfpMrVfcc6nmYQPHozG38SgkZBlR0AMyXCu3YqVqb7wie24wGVPp1I6P5wxT0S6JODZA/vzvOVjLsWUS1PFbclKJs8Uu5kXCcPDy9rKqA8PzYi0SzJ14GTug9WXOysWfyOsbgCW9IPU9XpwtDH2mrckE53EKNpHP4yk1v/6VxUoNXmiF81NVe8+lg3Y7xiNmqDtn7q0vgvewUx7CLyKeUk6TB72lG3iDUSR7rfFYg=
+cache:
+  directories:
+  - "$HOME/.m2"
+before_script:
+- sudo apt-get update || true
+- sudo apt-get install -y debconf-utils
+- sudo debconf-set-selections <<< 'mysql-apt-config mysql-apt-config/select-server
+  select mysql-8.0'
+- wget https://dev.mysql.com/get/mysql-apt-config_0.8.13-1_all.deb
+- sudo -E dpkg -i mysql-apt-config_0.8.13-1_all.deb
+- sudo apt-get update || true
+- echo "Installing MySQL 8..."
+- sudo -E apt-get -y install mysql-server
+- sudo mysql -u root -e "CREATE User 'dev'@'localhost' IDENTIFIED BY 'ax2'; GRANT
+  ALL PRIVILEGES ON *.* TO 'dev'@'localhost' WITH GRANT OPTION;"
+- sudo mysql -u dev -pax2 -e "CREATE DATABASE startcode_test;"
+- echo "Change  port to 3307, to mirror the local development setup"
+- sudo systemctl stop mysql
+- sudo sh -c 'echo "port=3307" >> /etc/mysql/mysql.conf.d/mysqld.cnf'
+- echo "Restarting MySQL..."
+- sudo systemctl start mysql
+- mysql --version
+- echo "before_script Complete"
+script:
+- mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar -Dsonar.projectKey=AlexanderSarson_JavaTemplateTravis
+deploy:
+  provider: script
+  script: mvn -Dremote.user=$REMOTE_USER -Dremote.password=$REMOTE_PW tomcat7:deploy
+  skip_cleanup: true
+  on:
+    branch: master
