@@ -25,6 +25,12 @@ public class HobbyDTO {
         this.name = name;
         this.description = description;
     }
+
+    public HobbyDTO(long id, String name, String description) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+    }
     
     public HobbyDTO(Hobby hobby) {
         this.id = hobby.getId();
@@ -46,6 +52,14 @@ public class HobbyDTO {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
     
     public static List<HobbyDTO> convertHobbyListToDTO(List<Hobby> hobbies){

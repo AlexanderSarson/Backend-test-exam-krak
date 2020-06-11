@@ -5,6 +5,7 @@
  */
 package rest;
 
+import dtos.HobbyDTO;
 import entity.Address;
 import entity.Hobby;
 import entity.Person;
@@ -22,6 +23,7 @@ import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.grizzly.http.util.HttpStatus;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
+import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
@@ -108,9 +110,9 @@ public class HobbyResourceTest {
             em.close();
         }
     }
-    
+
     @Test
-    public void testGetAllHobbies(){
+    public void testGetAllHobbies() {
         given()
                 .contentType(ContentType.JSON)
                 .get("hobby/all")
@@ -118,6 +120,45 @@ public class HobbyResourceTest {
                 .assertThat()
                 .statusCode(HttpStatus.OK_200.getStatusCode())
                 .body("size()", is(4));
+    }
+
+    @Test
+    public void testCreateHobby() {
+        HobbyDTO hobbyDTO = new HobbyDTO("football", "i just play");
+        given()
+                .contentType(ContentType.JSON)
+                .body(hobbyDTO)
+                .when()
+                .post("/hobby")
+                .then()
+                .body("name", equalTo("football"))
+                .body("description", equalTo("i just play"));
+    }
+
+    @Test
+    public void testEditHobby() {
+        HobbyDTO hobbyDTO = new HobbyDTO(h1);
+        hobbyDTO.setName("hejhej");
+        given()
+                .contentType(ContentType.JSON)
+                .body(hobbyDTO)
+                .when()
+                .put("/hobby")
+                .then()
+                .body("name", equalTo(hobbyDTO.getName()));
+    }
+
+    @Disabled
+    @Test
+    public void testRemoveHobby() {
+        HobbyDTO hobbyDTO = new HobbyDTO(h1);
+        given()
+                .contentType(ContentType.JSON)
+                .body(hobbyDTO)
+                .when()
+                .delete("/hobby")
+                .then()
+                .body("name", equalTo(hobbyDTO.getName()));
     }
 
 }

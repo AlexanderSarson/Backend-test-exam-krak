@@ -25,7 +25,7 @@ import utils.EMF_Creator;
  * @author root
  */
 public class HobbyFacadeTest {
-    
+
     private static EntityManagerFactory entityManagerFactory;
     private static HobbyFacade hobbyFacade;
     private static Hobby h1, h2, h3, h4;
@@ -55,6 +55,7 @@ public class HobbyFacadeTest {
         p1 = new Person("email1@ok.dk", "firstname1", "lastname1", "44556677", hobbies, a1);
         p2 = new Person("email2@ok.dk", "firstname2", "lastname2", "44556678", hobbies2, a2);
     }
+
     @BeforeEach
     public void setUp() {
         EntityManager em = entityManagerFactory.createEntityManager();
@@ -62,7 +63,7 @@ public class HobbyFacadeTest {
             em.getTransaction().begin();
             em.createNamedQuery("Hobby.deleteAllRows").executeUpdate();
             em.createNamedQuery("Person.deleteAllRows").executeUpdate();
-            em.createNamedQuery("Address.deleteAllRows").executeUpdate();  
+            em.createNamedQuery("Address.deleteAllRows").executeUpdate();
             em.persist(h1);
             em.persist(h2);
             em.persist(h3);
@@ -78,10 +79,31 @@ public class HobbyFacadeTest {
     }
 
     @Test
-    public void testGetAllHobbies() throws UserException{
+    public void testGetAllHobbies() throws UserException {
         int ExpectedSize = 4;
         List<HobbyDTO> listOfHobbies = hobbyFacade.getAllHobbies();
         assertEquals(ExpectedSize, listOfHobbies.size());
     }
-    
+
+    @Test
+    public void testAddHobby() {
+        HobbyDTO hobby = new HobbyDTO("Bordfodbold", "mega sjovt");
+        hobbyFacade.addHobby(hobby);
+        assertTrue(hobby.getId() > 0);
+    }
+
+    @Test
+    public void testDeleteHobby() {
+        HobbyDTO hobbyDTO1 = new HobbyDTO(h1);
+        HobbyDTO hobbyDTO2 = hobbyFacade.deleteHobby(hobbyDTO1);
+        assertTrue(h1.getId() == hobbyDTO2.getId());
+    }
+
+    @Test
+    public void testEditHobby() {
+        HobbyDTO hobbyDTO = new HobbyDTO(h1);
+        hobbyDTO.setName("ny hobby");
+        hobbyDTO = hobbyFacade.editHobby(hobbyDTO);
+        assertEquals(hobbyDTO.getName(),"ny hobby");
+    }
 }
