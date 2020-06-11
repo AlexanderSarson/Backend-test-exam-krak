@@ -5,6 +5,7 @@
  */
 package facades;
 
+import dtos.HobbyDTO;
 import dtos.PersonDTO;
 import entity.Hobby;
 import entity.Person;
@@ -15,6 +16,7 @@ import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.NoResultException;
+import org.jsoup.nodes.Entities;
 
 /**
  *
@@ -89,6 +91,20 @@ public class PersonFacade {
             em.close();
         }
         return personDTOList;
+    }
+
+    public List<HobbyDTO> getAllHobbies() {
+        EntityManager em = getEntityManager();
+        List<HobbyDTO> listOfHobbiesDTO = new ArrayList<>();
+        try {
+            List<Hobby> hobbies = em.createQuery("SELECT h FROM Hobby h", Hobby.class).getResultList();
+            for (Hobby hobby : hobbies) {
+                listOfHobbiesDTO.add(new HobbyDTO(hobby));
+            }
+        } finally {
+            em.close();
+        }
+        return listOfHobbiesDTO;
     }
 
 }

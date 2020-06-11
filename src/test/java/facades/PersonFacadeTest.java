@@ -5,6 +5,7 @@
  */
 package facades;
 
+import dtos.HobbyDTO;
 import dtos.PersonDTO;
 import entity.Address;
 import entity.Hobby;
@@ -115,6 +116,13 @@ public class PersonFacadeTest {
         int expectedSize = 2;
         List<PersonDTO> personDTOList = personFacade.getPersonsByHobby(h1.getName());
         assertEquals(expectedSize, personDTOList.size());
+    }
+    
+    @Test
+    public void testGetAllHobbies() throws UserException{
+        int ExpectedSize = 4;
+        List<HobbyDTO> listOfHobbies = personFacade.getAllHobbies();
+        assertEquals(ExpectedSize, listOfHobbies.size());
     }
     
 }
