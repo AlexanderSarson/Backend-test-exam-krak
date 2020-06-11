@@ -6,11 +6,9 @@
 package facades;
 
 import dtos.HobbyDTO;
-import dtos.PersonDTO;
 import entity.Address;
 import entity.Hobby;
 import entity.Person;
-import errorhandling.NotFoundException;
 import errorhandling.UserException;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,21 +24,21 @@ import utils.EMF_Creator;
  *
  * @author root
  */
-public class PersonFacadeTest {
-
+public class HobbyFacadeTest {
+    
     private static EntityManagerFactory entityManagerFactory;
-    private static PersonFacade personFacade;
+    private static HobbyFacade hobbyFacade;
     private static Hobby h1, h2, h3, h4;
     private static Address a1, a2;
     private static Person p1, p2;
 
-    public PersonFacadeTest() {
+    public HobbyFacadeTest() {
     }
 
     @BeforeAll
     public static void setUpClass() {
         entityManagerFactory = EMF_Creator.createEntityManagerFactory(EMF_Creator.DbSelector.TEST, EMF_Creator.Strategy.DROP_AND_CREATE);
-        personFacade = PersonFacade.getPersonFacade(entityManagerFactory);
+        hobbyFacade = HobbyFacade.getHobbyFacade(entityManagerFactory);
         h1 = new Hobby("Badminton", "its fun");
         h2 = new Hobby("Fodbold", "its fun");
         h3 = new Hobby("Tennis", "its fun");
@@ -78,44 +76,12 @@ public class PersonFacadeTest {
             em.close();
         }
     }
-    
 
     @Test
-    public void testGetPersonById() throws NotFoundException {
-        long personId = p1.getId();
-        String expectedFirstName = "firstname1";
-        String resultFirstName = personFacade.getPersonById(personId).getFirstName();
-        assertEquals(expectedFirstName, resultFirstName);
-    }
-    
-    @Test
-    public void testGetPersonById_with_invalid_id() {
-        long personId = 1000;
-        assertThrows(NotFoundException.class, () -> {
-            personFacade.getPersonById(personId);
-        });
-    }
-    
-    @Test
-    public void testGetPersonByEmail() throws UserException {
-        String expectedEmail = "email1@ok.dk";
-        String resultEmail = personFacade.getPersonByEmail(expectedEmail).getEmail();
-        assertEquals(expectedEmail, resultEmail);
-    }
-    
-    @Test
-    public void testGetPersonById_with_invalid_email() {
-        String invalidEmail = "invalid";
-        assertThrows(UserException.class, () -> {
-            personFacade.getPersonByEmail(invalidEmail);
-        });
-    }
-    
-    @Test
-    public void testGetPersonsByHobby() throws UserException {
-        int expectedSize = 2;
-        List<PersonDTO> personDTOList = personFacade.getPersonsByHobby(h1.getName());
-        assertEquals(expectedSize, personDTOList.size());
+    public void testGetAllHobbies() throws UserException{
+        int ExpectedSize = 4;
+        List<HobbyDTO> listOfHobbies = hobbyFacade.getAllHobbies();
+        assertEquals(ExpectedSize, listOfHobbies.size());
     }
     
 }

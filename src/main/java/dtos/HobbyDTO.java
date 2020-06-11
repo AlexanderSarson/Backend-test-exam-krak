@@ -14,6 +14,7 @@ import java.util.List;
  * @author root
  */
 public class HobbyDTO {
+    private long id;
     private String name;
     private String description;
 
@@ -26,6 +27,7 @@ public class HobbyDTO {
     }
     
     public HobbyDTO(Hobby hobby) {
+        this.id = hobby.getId();
         this.name = hobby.getName();
         this.description = hobby.getDescription();
     }

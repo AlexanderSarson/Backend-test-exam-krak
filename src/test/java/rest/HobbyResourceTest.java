@@ -22,7 +22,6 @@ import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.grizzly.http.util.HttpStatus;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
-import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
@@ -36,9 +35,9 @@ import utils.EMF_Creator;
  *
  * @author root
  */
-public class PersonResourceTest {
-    
-   private static final int SERVER_PORT = 7777;
+public class HobbyResourceTest {
+
+    private static final int SERVER_PORT = 7777;
     private static final String SERVER_URL = "http://localhost/api";
     private static Hobby h1, h2, h3, h4;
     private static Address a1, a2;
@@ -95,7 +94,7 @@ public class PersonResourceTest {
             em.getTransaction().begin();
             em.createNamedQuery("Hobby.deleteAllRows").executeUpdate();
             em.createNamedQuery("Person.deleteAllRows").executeUpdate();
-            em.createNamedQuery("Address.deleteAllRows").executeUpdate();  
+            em.createNamedQuery("Address.deleteAllRows").executeUpdate();
             em.persist(h1);
             em.persist(h2);
             em.persist(h3);
@@ -111,54 +110,14 @@ public class PersonResourceTest {
     }
     
     @Test
-    public void testGetPersonByEmail() {
-        String expectedEmail = "email1@ok.dk";
+    public void testGetAllHobbies(){
         given()
                 .contentType(ContentType.JSON)
-                .get("person/email/" + expectedEmail)
+                .get("hobby/all")
                 .then()
                 .assertThat()
                 .statusCode(HttpStatus.OK_200.getStatusCode())
-                .body("email", equalTo(expectedEmail));
+                .body("size()", is(4));
     }
-    
-    @Test
-    public void testGetPersonByInvalidEmail() {
-        String expectedEmail = "asdas@ok.dk";
-        given()
-                .contentType(ContentType.JSON)
-                .get("person/email/" + expectedEmail)
-                .then()
-                .assertThat()
-                .statusCode(HttpStatus.NOT_ACCEPTABLE_406.getStatusCode())
-                .body("message", equalTo("No person found with that email"));
-    }
-    
-    @Test
-    public void testGetPersonById() {
-        long personId = p1.getId();
-        String expectedEmail = "email1@ok.dk";
-        given()
-                .contentType(ContentType.JSON)
-                .get("person/id/" + personId)
-                .then()
-                .assertThat()
-                .statusCode(HttpStatus.OK_200.getStatusCode())
-                .body("email", equalTo(expectedEmail));
-    }
-    
-    @Test
-    public void testGetPersonsByHobby() {
-        String hobby = "Badminton";
-        given()
-                .contentType(ContentType.JSON)
-                .get("person/hobby/" + hobby)
-                .then()
-                .assertThat()
-                .statusCode(HttpStatus.OK_200.getStatusCode())
-                .body("firstName[0]", equalTo(p1.getFirstName()));
-    }
-    
-    
-    
+
 }
