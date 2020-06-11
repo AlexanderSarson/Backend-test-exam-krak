@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import java.util.List;
+import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
@@ -52,13 +53,13 @@ public class HobbyResource {
      */
     public HobbyResource() {
     }
-    
+
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public String getStatus() {
         return "{\"status\": \"it works\"}";
     }
-    
+
     @Operation(summary = "Get all hobbies",
             tags = {"hobby"},
             responses = {
@@ -73,7 +74,7 @@ public class HobbyResource {
     public List<HobbyDTO> getAllHobbies() throws UserException {
         return FACADE.getAllHobbies();
     }
-    
+
     @Operation(summary = "Create a hobby",
             tags = {"hobby"},
             responses = {
@@ -82,6 +83,7 @@ public class HobbyResource {
                 @ApiResponse(responseCode = "200", description = "The hobby is created"),
                 @ApiResponse(responseCode = "404", description = "Hobby not created")})
     @POST
+    @RolesAllowed({"admin"})
     @Produces({MediaType.APPLICATION_JSON})
     @Consumes(MediaType.APPLICATION_JSON)
     public HobbyDTO createHobbyByDTO(HobbyDTO hobbyDTO
@@ -93,7 +95,7 @@ public class HobbyResource {
         dto = FACADE.addHobby(hobbyDTO);
         return dto;
     }
-    
+
     @Operation(summary = "Edit a hobby",
             tags = {"hobby"},
             responses = {
@@ -102,6 +104,7 @@ public class HobbyResource {
                 @ApiResponse(responseCode = "200", description = "The hobby is edited"),
                 @ApiResponse(responseCode = "404", description = "Hobby not edited")})
     @PUT
+    @RolesAllowed({"admin"})
     @Produces({MediaType.APPLICATION_JSON})
     @Consumes(MediaType.APPLICATION_JSON)
     public HobbyDTO editHobbyByDTO(HobbyDTO hobbyDTO
@@ -113,7 +116,7 @@ public class HobbyResource {
         dto = FACADE.editHobby(hobbyDTO);
         return dto;
     }
-    
+
     @Operation(summary = "Delete a hobby",
             tags = {"hobby"},
             responses = {
@@ -122,6 +125,7 @@ public class HobbyResource {
                 @ApiResponse(responseCode = "200", description = "The hobby is edited"),
                 @ApiResponse(responseCode = "404", description = "Hobby not edited")})
     @DELETE
+    @RolesAllowed({"admin"})
     @Produces({MediaType.APPLICATION_JSON})
     @Consumes(MediaType.APPLICATION_JSON)
     public HobbyDTO deleteHobbyByDTO(HobbyDTO hobbyDTO
@@ -133,5 +137,5 @@ public class HobbyResource {
         dto = FACADE.deleteHobby(hobbyDTO);
         return dto;
     }
-    
+
 }
