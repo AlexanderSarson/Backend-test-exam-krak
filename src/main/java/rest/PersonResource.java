@@ -119,4 +119,20 @@ public class PersonResource {
         person = FACADE.getPersonById(id);
         return person;
     }
+    
+    @Operation(summary = "Get people with a specific hobby",
+            tags = {"person"},
+            responses = {
+                @ApiResponse(
+                        content = @Content(mediaType = "application/json", schema = @Schema(implementation = PersonDTO.class))),
+                @ApiResponse(responseCode = "200", description = "The Requested people information"),
+                @ApiResponse(responseCode = "404", description = "No people found with that hobby")})
+    @Path("/hobby/{name}")
+    @GET
+    @Produces({MediaType.APPLICATION_JSON})
+    @Consumes(MediaType.APPLICATION_JSON)
+    public List<PersonDTO> getPeopleByHobby(@PathParam("name") String hobbyName) throws UserException {
+        List<PersonDTO> people = FACADE.getPersonsByHobby(hobbyName);
+        return people;
+    }
 }

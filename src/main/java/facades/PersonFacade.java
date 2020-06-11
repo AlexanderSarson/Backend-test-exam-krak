@@ -6,9 +6,12 @@
 package facades;
 
 import dtos.PersonDTO;
+import entity.Hobby;
 import entity.Person;
 import errorhandling.NotFoundException;
 import errorhandling.UserException;
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.NoResultException;
@@ -63,11 +66,29 @@ public class PersonFacade {
                     .setParameter("email", email)
                     .getSingleResult();
             return new PersonDTO(person);
-        } catch (NoResultException e){
+        } catch (NoResultException e) {
             throw new UserException("No person found with that email");
         } finally {
             em.close();
         }
+    }
+
+    public List<PersonDTO> getPersonsByHobby(String hobby) throws UserException {
+        EntityManager em = getEntityManager();
+        List<PersonDTO> personDTOList = new ArrayList<>();
+        try {
+            List<Hobby> hobbies = em.createQuery("SELECT h FROM Hobby h WHERE h.name = :hobby", Hobby.class).setParameter("hobby", hobby).getResultList();
+            for (Hobby hobby1 : hobbies) {
+                for (Person person : hobby1.getPersons()) {
+                    personDTOList.add(new PersonDTO(person));
+                }
+            }
+        } catch (NoResultException e) {
+            throw new UserException("No persons found with that hobby");
+        } finally {
+            em.close();
+        }
+        return personDTOList;
     }
 
 }

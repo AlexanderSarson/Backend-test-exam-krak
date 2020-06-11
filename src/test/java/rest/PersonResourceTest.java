@@ -146,4 +146,16 @@ public class PersonResourceTest {
                 .body("email", equalTo(expectedEmail));
     }
     
+    @Test
+    public void testGetPersonsByHobby() {
+        String hobby = "Badminton";
+        given()
+                .contentType(ContentType.JSON)
+                .get("person/hobby/" + hobby)
+                .then()
+                .assertThat()
+                .statusCode(HttpStatus.OK_200.getStatusCode())
+                .body("firstName[0]", equalTo(p1.getFirstName()));
+    }
+    
 }

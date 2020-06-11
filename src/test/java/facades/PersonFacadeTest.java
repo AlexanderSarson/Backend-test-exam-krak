@@ -5,6 +5,7 @@
  */
 package facades;
 
+import dtos.PersonDTO;
 import entity.Address;
 import entity.Hobby;
 import entity.Person;
@@ -49,6 +50,7 @@ public class PersonFacadeTest {
         List<Hobby> hobbies2 = new ArrayList<>();
         hobbies.add(h1);
         hobbies.add(h2);
+        hobbies2.add(h1);
         hobbies2.add(h3);
         hobbies2.add(h4);
         p1 = new Person("email1@ok.dk", "firstname1", "lastname1", "44556677", hobbies, a1);
@@ -106,6 +108,13 @@ public class PersonFacadeTest {
         assertThrows(UserException.class, () -> {
             personFacade.getPersonByEmail(invalidEmail);
         });
+    }
+    
+    @Test
+    public void testGetPersonsByHobby() throws UserException {
+        int expectedSize = 2;
+        List<PersonDTO> personDTOList = personFacade.getPersonsByHobby(h1.getName());
+        assertEquals(expectedSize, personDTOList.size());
     }
     
 }
