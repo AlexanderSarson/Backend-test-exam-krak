@@ -31,6 +31,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
+import static rest.BaseResourceTest.testProps;
 import utils.EMF_Creator;
 
 /**
@@ -125,8 +126,17 @@ public class HobbyResourceTest {
     @Test
     public void testCreateHobby() {
         HobbyDTO hobbyDTO = new HobbyDTO("football", "i just play");
+        String loginPayload = "{\"username\":\"" + testProps.getProperty("user1_username") + "\",\"password\":\"" + testProps.getProperty("user1_password") + "\"}";
+        String token = given()
+                .contentType(ContentType.JSON)
+                .body(loginPayload)
+                .post("login")
+                .then()
+                .extract()
+                .path("token");
         given()
                 .contentType(ContentType.JSON)
+                .header("x-access-token",token)
                 .body(hobbyDTO)
                 .when()
                 .post("/hobby")
@@ -139,8 +149,17 @@ public class HobbyResourceTest {
     public void testEditHobby() {
         HobbyDTO hobbyDTO = new HobbyDTO(h1);
         hobbyDTO.setName("hejhej");
+        String loginPayload = "{\"username\":\"" + testProps.getProperty("user1_username") + "\",\"password\":\"" + testProps.getProperty("user1_password") + "\"}";
+        String token = given()
+                .contentType(ContentType.JSON)
+                .body(loginPayload)
+                .post("login")
+                .then()
+                .extract()
+                .path("token");
         given()
                 .contentType(ContentType.JSON)
+                .header("x-access-token",token)
                 .body(hobbyDTO)
                 .when()
                 .put("/hobby")
@@ -152,8 +171,17 @@ public class HobbyResourceTest {
     @Test
     public void testRemoveHobby() {
         HobbyDTO hobbyDTO = new HobbyDTO(h1);
+        String loginPayload = "{\"username\":\"" + testProps.getProperty("user1_username") + "\",\"password\":\"" + testProps.getProperty("user1_password") + "\"}";
+        String token = given()
+                .contentType(ContentType.JSON)
+                .body(loginPayload)
+                .post("login")
+                .then()
+                .extract()
+                .path("token");
         given()
                 .contentType(ContentType.JSON)
+                .header("x-access-token",token)
                 .body(hobbyDTO)
                 .when()
                 .delete("/hobby")
