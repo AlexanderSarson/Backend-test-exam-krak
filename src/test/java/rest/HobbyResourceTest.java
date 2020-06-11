@@ -9,6 +9,8 @@ import dtos.HobbyDTO;
 import entity.Address;
 import entity.Hobby;
 import entity.Person;
+import entity.Role;
+import entity.User;
 import io.restassured.RestAssured;
 import static io.restassured.RestAssured.given;
 import io.restassured.http.ContentType;
@@ -106,10 +108,41 @@ public class HobbyResourceTest {
             em.persist(a2);
             em.persist(p1);
             em.persist(p2);
+            em.createQuery("delete from User").executeUpdate();
+            em.createQuery("delete from Role").executeUpdate();
+
+            Role userRole = new Role("user");
+            Role adminRole = new Role("admin");
+            User user = new User("user", "test");
+            user.addRole(userRole);
+            User admin = new User("admin", "test");
+            admin.addRole(adminRole);
+            User both = new User("user_admin", "test");
+            both.addRole(userRole);
+            both.addRole(adminRole);
+            em.persist(userRole);
+            em.persist(adminRole);
+            em.persist(user);
+            em.persist(admin);
+            em.persist(both);
             em.getTransaction().commit();
         } finally {
             em.close();
         }
+    }
+    //This is how we hold on to the token after login, similar to that a client must store the token somewhere
+    private static String securityToken;
+
+    private static void login(String role, String password) {
+        String json = String.format("{username: \"%s\", password: \"%s\"}", role, password);
+        securityToken = given()
+                .contentType("application/json")
+                .body(json)
+                //.when().post("/api/login")
+                .when().post("/login")
+                .then()
+                .extract().path("token");
+        System.out.println("TOKEN ---> " + securityToken);
     }
 
     @Test
@@ -126,17 +159,10 @@ public class HobbyResourceTest {
     @Test
     public void testCreateHobby() {
         HobbyDTO hobbyDTO = new HobbyDTO("football", "i just play");
-        String loginPayload = "{\"username\":\"" + testProps.getProperty("user1_username") + "\",\"password\":\"" + testProps.getProperty("user1_password") + "\"}";
-        String token = given()
-                .contentType(ContentType.JSON)
-                .body(loginPayload)
-                .post("login")
-                .then()
-                .extract()
-                .path("token");
+        login("admin", "test");
         given()
                 .contentType(ContentType.JSON)
-                .header("x-access-token",token)
+                .header("x-access-token", securityToken)
                 .body(hobbyDTO)
                 .when()
                 .post("/hobby")
@@ -149,17 +175,10 @@ public class HobbyResourceTest {
     public void testEditHobby() {
         HobbyDTO hobbyDTO = new HobbyDTO(h1);
         hobbyDTO.setName("hejhej");
-        String loginPayload = "{\"username\":\"" + testProps.getProperty("user1_username") + "\",\"password\":\"" + testProps.getProperty("user1_password") + "\"}";
-        String token = given()
-                .contentType(ContentType.JSON)
-                .body(loginPayload)
-                .post("login")
-                .then()
-                .extract()
-                .path("token");
+        login("admin", "test");
         given()
                 .contentType(ContentType.JSON)
-                .header("x-access-token",token)
+                .header("x-access-token", securityToken)
                 .body(hobbyDTO)
                 .when()
                 .put("/hobby")
@@ -172,16 +191,10 @@ public class HobbyResourceTest {
     public void testRemoveHobby() {
         HobbyDTO hobbyDTO = new HobbyDTO(h1);
         String loginPayload = "{\"username\":\"" + testProps.getProperty("user1_username") + "\",\"password\":\"" + testProps.getProperty("user1_password") + "\"}";
-        String token = given()
-                .contentType(ContentType.JSON)
-                .body(loginPayload)
-                .post("login")
-                .then()
-                .extract()
-                .path("token");
+        login("admin", "test");
         given()
                 .contentType(ContentType.JSON)
-                .header("x-access-token",token)
+                .header("x-access-token", securityToken)
                 .body(hobbyDTO)
                 .when()
                 .delete("/hobby")
